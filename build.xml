@@ -8,7 +8,7 @@
 	<property name="test.dir" value="test"/>
 
     <path id="classpath">
-        <fileset dir="${build.dir}/jars" includes="**/*.jar"/>
+        <fileset dir="${build.jars}" includes="**/*.jar"/>
         <fileset dir="${test.dir}/${build.classes}" includes="**/*.class"/>
     </path>
 
@@ -30,7 +30,12 @@
 		<mkdir dir="${test.dir}/${build.classes}"/>
 		<mkdir dir="${test.dir}/${build.jars}"/>
 		<javac srcdir="${test.dir}" destdir="${test.dir}/${build.classes}" classpathref="classpath" includeantruntime="false"/>
-		<jar destfile="${test.dir}/${build.jars}/RandomPlayerTest.jar" basedir="${test.dir}/${build.classes}"/>
+		<jar destfile="${test.dir}/${build.jars}/RandomPlayerTest.jar" basedir="${test.dir}/${build.classes}">
+            <manifest>
+                <attribute name="Main-Class" value="RandomPlayerTest"/>
+            </manifest>
+            <zipgroupfileset dir="${build.jars}" includes="**/*.jar"/>
+		</jar>
 		<java jar="${test.dir}/${build.jars}/RandomPlayerTest.jar" fork="true"/>
 		<delete dir="${test.dir}/${build.dir}"/>
 	</target>
