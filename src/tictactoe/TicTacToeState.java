@@ -96,6 +96,8 @@ public class TicTacToeState {
 		row:
 			for (int y = 0; y < size; y++){
 				char startingPlayer = board[y][0];
+				if (startingPlayer == ' ')
+					continue;
 				for (int x = 1; x < size; x++){
 					if (board[y][x] != startingPlayer)
 						continue row;
@@ -107,6 +109,8 @@ public class TicTacToeState {
 		col:
 			for (int x = 0; x < size; x++){
 				char startingPlayer = board[0][x];
+				if (startingPlayer == ' ')
+					continue;
 				for (int y = 1; y < size; y++){
 					if (board[y][x] != startingPlayer)
 						continue col;
@@ -116,18 +120,22 @@ public class TicTacToeState {
 
 		// The 2 diagnols
 		char startingPlayer = board[0][0];
-		for (int x = 1; x < size; x++){
-			if (x == size-1 && board[x][x] == startingPlayer)
-				return true;
-			if (board[x][x] != startingPlayer)
-				break;
+		if (startingPlayer != ' '){
+			for (int x = 1; x < size; x++){
+				if (x == size-1 && board[x][x] == startingPlayer)
+					return true;
+				if (board[x][x] != startingPlayer)
+					break;
+			}
 		}
 		startingPlayer = board[size-1][0];
-		for (int x = 1; x < size; x++){
-			if (x == size-1 && board[size-1-x][x] == startingPlayer)
-				return true;
-			if (board[size-1-x][x] != startingPlayer)
-				break;
+		if (startingPlayer != ' '){
+			for (int x = 1; x < size; x++){
+				if (x == size-1 && board[size-1-x][x] == startingPlayer)
+					return true;
+				if (board[size-1-x][x] != startingPlayer)
+					break;
+			}
 		}
 
 		return (moveCount >= size*size);

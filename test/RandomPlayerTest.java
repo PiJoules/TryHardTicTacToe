@@ -20,23 +20,23 @@ public class RandomPlayerTest
         {
             playerMove= p1.getMove(board);
             board = board.makeMove(playerMove);
+            board.display();
             if(board.gameOver())
             {
+                System.out.println("Game Over");
                 playing = false;
                 break;
             }
-
-            board.display();
 
             playerMove = p2.getMove(board);
             board = board.makeMove(playerMove);
+            board.display();
             if(board.gameOver())
             {
                 playing = false;
                 break;
             }
 
-            board.display();
         }
 
     }
