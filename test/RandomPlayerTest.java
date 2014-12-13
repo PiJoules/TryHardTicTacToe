@@ -1,4 +1,4 @@
-package tictactoe;
+import tictactoe.*;
 
 /**
  * This is a test case for the tic tac toe game with two random players. 

@@ -1,7 +1,5 @@
-package tictactoe;
-
-
 import java.util.Random;
+import tictactoe.*;
 
 /**
  * A random tic tac toe player

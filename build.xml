@@ -5,6 +5,12 @@
 	<property name="build.dir" value="build"/>
 	<property name="build.classes" value="${build.dir}/classes"/>
 	<property name="build.jars" value="${build.dir}/jars"/>
+	<property name="test.dir" value="test"/>
+
+    <path id="classpath">
+        <fileset dir="${build.dir}/jars" includes="**/*.jar"/>
+        <fileset dir="${test.dir}/${build.classes}" includes="**/*.class"/>
+    </path>
 
 	<target name="clean">
 		<delete dir="${build.dir}"/>
@@ -12,12 +18,21 @@
 
 	<target name="compile">
 		<mkdir dir="${build.classes}"/>
-		<javac srcdir="${src.dir}" destdir="${build.classes}"/>
+		<javac srcdir="${src.dir}" destdir="${build.classes}" includeantruntime="false"/>
 	</target>
 
 	<target name="jar" depends="compile">
 		<mkdir dir="${build.jars}"/>
 		<jar destfile="${build.jars}/${ant.project.name}.jar" basedir="${build.classes}"/>
+	</target>
+
+	<target name="test">
+		<mkdir dir="${test.dir}/${build.classes}"/>
+		<mkdir dir="${test.dir}/${build.jars}"/>
+		<javac srcdir="${test.dir}" destdir="${test.dir}/${build.classes}" classpathref="classpath" includeantruntime="false"/>
+		<jar destfile="${test.dir}/${build.jars}/RandomPlayerTest.jar" basedir="${test.dir}/${build.classes}"/>
+		<java jar="${test.dir}/${build.jars}/RandomPlayerTest.jar" fork="true"/>
+		<delete dir="${test.dir}/${build.dir}"/>
 	</target>
 
 </project>
