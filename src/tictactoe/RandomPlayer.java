@@ -1,9 +1,11 @@
-import tictactoe.Player;
-import tictactoe.Move;
-import tictactoe.TicTacToeState;
+package tictactoe;
+
 
 import java.util.Random;
 
+/**
+ * A random tic tac toe player
+ */
 public class RandomPlayer extends Player {
 
 	public final int playerNumber;
@@ -14,7 +16,7 @@ public class RandomPlayer extends Player {
 	}
 
 	public Move getMove(TicTacToeState state){
-		Move[] possibleMoves = state.getAllMoves();
+		Move[] possibleMoves = state.getAllMoves(playerNumber);
 		int choice = random.nextInt(possibleMoves.length);
 		return possibleMoves[choice];
 	}

@@ -16,7 +16,7 @@ public class TicTacToeState {
 
 	public TicTacToeState(int size){
 		this.size = size;
-		board = new char[size][size]
+		board = new char[size][size];
 
 		//Initialize the board to be all spaces
 		for(int i = 0; i < size; i ++)
@@ -65,6 +65,19 @@ public class TicTacToeState {
 		else if (nextPlayer == 'o')
 			nextPlayer = 'x';
 		return this;
+	}
+
+	//Display the board
+	public void display()
+	{
+		for(int i = 0; i < size; i ++)
+		{
+			for(int j = 0; j < size; j ++)
+			{
+				System.out.print(board[j][i]);
+			}
+			System.out.println("");
+		}
 	}
 
 
