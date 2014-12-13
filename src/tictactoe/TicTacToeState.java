@@ -5,13 +5,13 @@ import java.util.ArrayList;
 // The current state of the board
 public class TicTacToeState {
 
-	private static char[][] board = new char[3][3];
-	private static int moveCount = 0;
-	private static int size;
+	private char[][] board = new char[3][3];
+	private int moveCount = 0;
+	private final int size;
 
 	// The current player making the move
 	// Players are indicated with x and o
-	private static char player = 'x';
+	private char player = 'x';
 
 
 	public TicTacToeState(int size){
