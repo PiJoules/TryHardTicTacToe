@@ -49,8 +49,8 @@ public class TicTacToeState {
 
 		// Swicth players after move is made
 		if (player == 'x')
-			player = 'y';
-		else if (player == 'y')
+			player = 'o';
+		else if (player == 'o')
 			player = 'x';
 		return this;
 	}
