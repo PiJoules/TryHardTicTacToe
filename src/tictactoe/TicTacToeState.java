@@ -5,17 +5,29 @@ import java.util.ArrayList;
 // The current state of the board
 public class TicTacToeState {
 
-	private char[][] board = new char[3][3];
-	private int moveCount = 0;
+	private char[][] board;
+	private int moveCount;
 	private final int size;
 
 	// The current player making the move
 	// Players are indicated with x and o
-	private char player = 'x';
+	private char nextPlayer = 'x';
 
 
 	public TicTacToeState(int size){
 		this.size = size;
+		board = new char[size][size]
+
+		//Initialize the board to be all spaces
+		for(int i = 0; i < size; i ++)
+		{
+			for(int j = 0; j < size; j ++)
+			{
+				board[i][j] = ' ';
+			}
+		}
+		//Initialize the move count
+		moveCount = 0;
 	}
 
 	// Copy constructor
@@ -26,12 +38,12 @@ public class TicTacToeState {
 	}
 
 	// Return all moves that can be made ()
-	public Move[] getAllMoves(){
+	public Move[] getAllMoves(int player){
 		ArrayList<Move> availableMoves = new ArrayList<>();
 		for (int y = 0; y < size; y++){
 			for (int x = 0; x < size; x++){
-				if (board[y][x] == '\0'){
-					availableMoves.add(new Move(x,y));
+				if (board[y][x] == ' '){
+					availableMoves.add(new Move(x,y,player));
 				}
 			}
 		}
@@ -45,13 +57,13 @@ public class TicTacToeState {
 
 		int x = move.getX();
 		int y = move.getY();
-		board[y][x] = player;
+		board[y][x] = move.getPlayer();
 
 		// Swicth players after move is made
-		if (player == 'x')
-			player = 'o';
-		else if (player == 'o')
-			player = 'x';
+		if (nextPlayer == 'x')
+			nextPlayer = 'o';
+		else if (nextPlayer == 'o')
+			nextPlayer = 'x';
 		return this;
 	}
 
