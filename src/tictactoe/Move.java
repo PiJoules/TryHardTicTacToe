@@ -1,7 +1,7 @@
 package tictactoe;
 
 public class Move {
-	private static int xPos, yPos;
+	private int xPos, yPos;
 	public Move(int x, int y){
 		this.xPos = x;
 		this.yPos = y;
