@@ -23,7 +23,6 @@ public class RandomPlayerTest
             board.display();
             if(board.gameOver())
             {
-                System.out.println("Game Over");
                 playing = false;
                 break;
             }
