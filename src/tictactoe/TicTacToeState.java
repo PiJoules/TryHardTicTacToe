@@ -77,6 +77,14 @@ public class TicTacToeState {
 			for(int j = 0; j < size; j ++)
 			{
 				System.out.print(board[j][i]);
+				if (j != size-1)
+					System.out.print("|");
+			}
+			if (i != size-1){
+				System.out.println("");
+				for (int j = 0; j < 2*size-1; j++){
+					System.out.print("-");
+				}
 			}
 			System.out.println("");
 		}
@@ -97,7 +105,7 @@ public class TicTacToeState {
 		// Check each row
 		row:
 			for (int y = 0; y < size; y++){
-				for (int x = 1; x < size; x++){
+				for (int x = 0; x < size; x++){
 					if (board[y][x] != playerChar)
 						continue row;
 				}
@@ -107,7 +115,7 @@ public class TicTacToeState {
 		// Check each col
 		col:
 			for (int x = 0; x < size; x++){
-				for (int y = 1; y < size; y++){
+				for (int y = 0; y < size; y++){
 					if (board[y][x] != playerChar)
 						continue col;
 				}
@@ -115,13 +123,13 @@ public class TicTacToeState {
 			}
 
 		// The 2 diagnols
-		for (int x = 1; x < size; x++){
+		for (int x = 0; x < size; x++){
 			if (x == size-1 && board[x][x] == playerChar)
 				return true;
 			if (board[x][x] != playerChar)
 				break;
 		}
-		for (int x = 1; x < size; x++){
+		for (int x = 0; x < size; x++){
 			if (x == size-1 && board[size-1-x][x] == playerChar)
 				return true;
 			if (board[size-1-x][x] != playerChar)
@@ -133,6 +141,10 @@ public class TicTacToeState {
 
 	public int getWinner(){
 		return this.winner;
+	}
+
+	public int getMoveCount(){
+		return this.moveCount;
 	}
 
 	// Game over if all spaces are taken or [size] in a row
