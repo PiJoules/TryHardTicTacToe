@@ -5,11 +5,13 @@
 	<property name="build.dir" value="build"/>
 	<property name="build.classes" value="${build.dir}/classes"/>
 	<property name="build.jars" value="${build.dir}/jars"/>
-	<property name="test.dir" value="test"/>
+	<property name="battlefield" value="InsertPlayersHere"/>
+	<property name="Player1" value="RandomPlayer"/>
+	<property name="Player2" value="RandomPlayer"/>
 
     <path id="classpath">
         <fileset dir="${build.jars}" includes="**/*.jar"/>
-        <fileset dir="${test.dir}/${build.classes}" includes="**/*.class"/>
+        <fileset dir="${battlefield}/${build.classes}" includes="**/*.class"/>
     </path>
 
 	<target name="clean">
@@ -26,18 +28,23 @@
 		<jar destfile="${build.jars}/${ant.project.name}.jar" basedir="${build.classes}"/>
 	</target>
 
-	<target name="test">
-		<mkdir dir="${test.dir}/${build.classes}"/>
-		<mkdir dir="${test.dir}/${build.jars}"/>
-		<javac srcdir="${test.dir}" destdir="${test.dir}/${build.classes}" classpathref="classpath" includeantruntime="false"/>
-		<jar destfile="${test.dir}/${build.jars}/RandomPlayerTest.jar" basedir="${test.dir}/${build.classes}">
+	<target name="test" depends="jar, battle"/>
+
+	<target name="battle">
+		<mkdir dir="${battlefield}/${build.classes}"/>
+		<mkdir dir="${battlefield}/${build.jars}"/>
+		<javac srcdir="${battlefield}" destdir="${battlefield}/${build.classes}" classpathref="classpath" includeantruntime="false"/>
+		<jar destfile="${battlefield}/${build.jars}/BattleField.jar" basedir="${battlefield}/${build.classes}">
             <manifest>
-                <attribute name="Main-Class" value="RandomPlayerTest"/>
+                <attribute name="Main-Class" value="BattleField"/>
             </manifest>
             <zipgroupfileset dir="${build.jars}" includes="**/*.jar"/>
 		</jar>
-		<java jar="${test.dir}/${build.jars}/RandomPlayerTest.jar" fork="true"/>
-		<delete dir="${test.dir}/${build.dir}"/>
+		<java jar="${battlefield}/${build.jars}/BattleField.jar" fork="true">
+			<arg value="${Player1}"/>
+			<arg value="${Player2}"/>
+		</java>
+		<delete dir="${battlefield}/${build.dir}"/>
 	</target>
 
 </project>
