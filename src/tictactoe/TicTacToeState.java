@@ -121,7 +121,6 @@ public class TicTacToeState {
 			if (board[x][x] != playerChar)
 				break;
 		}
-		startingPlayer = board[size-1][0];
 		for (int x = 1; x < size; x++){
 			if (x == size-1 && board[size-1-x][x] == playerChar)
 				return true;
