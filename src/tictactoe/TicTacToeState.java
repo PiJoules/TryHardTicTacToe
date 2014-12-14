@@ -8,9 +8,11 @@ public class TicTacToeState {
 	private char[][] board;
 	private int moveCount;
 	private final int size;
+	private int winner;
 
 	// The current player making the move
 	// Players are indicated with x and o
+	// The first player is always 'x' since it's the first to get placed on the board; second is 'o'
 	private char nextPlayer = 'x';
 
 
@@ -89,17 +91,14 @@ public class TicTacToeState {
 	}
 
 
-	// Game over if all spaces are taken or [size] in a row
-	public boolean gameOver(){
 
+	// playerChar is either 'x' pr 'o'
+	public boolean playerDidWin(char playerChar){
 		// Check each row
 		row:
 			for (int y = 0; y < size; y++){
-				char startingPlayer = board[y][0];
-				if (startingPlayer == ' ')
-					continue;
 				for (int x = 1; x < size; x++){
-					if (board[y][x] != startingPlayer)
+					if (board[y][x] != playerChar)
 						continue row;
 				}
 				return true;
@@ -108,36 +107,53 @@ public class TicTacToeState {
 		// Check each col
 		col:
 			for (int x = 0; x < size; x++){
-				char startingPlayer = board[0][x];
-				if (startingPlayer == ' ')
-					continue;
 				for (int y = 1; y < size; y++){
-					if (board[y][x] != startingPlayer)
+					if (board[y][x] != playerChar)
 						continue col;
 				}
 				return true;
 			}
 
 		// The 2 diagnols
-		char startingPlayer = board[0][0];
-		if (startingPlayer != ' '){
-			for (int x = 1; x < size; x++){
-				if (x == size-1 && board[x][x] == startingPlayer)
-					return true;
-				if (board[x][x] != startingPlayer)
-					break;
-			}
+		for (int x = 1; x < size; x++){
+			if (x == size-1 && board[x][x] == playerChar)
+				return true;
+			if (board[x][x] != playerChar)
+				break;
 		}
 		startingPlayer = board[size-1][0];
-		if (startingPlayer != ' '){
-			for (int x = 1; x < size; x++){
-				if (x == size-1 && board[size-1-x][x] == startingPlayer)
-					return true;
-				if (board[size-1-x][x] != startingPlayer)
-					break;
-			}
+		for (int x = 1; x < size; x++){
+			if (x == size-1 && board[size-1-x][x] == playerChar)
+				return true;
+			if (board[size-1-x][x] != playerChar)
+				break;
 		}
 
-		return (moveCount >= size*size);
+		return false;
+	}
+
+	public int getWinner(){
+		return this.winner;
+	}
+
+	// Game over if all spaces are taken or [size] in a row
+	public boolean gameOver(){
+
+		if (playerDidWin('x')){
+			this.winner = 1;
+			return true;
+		}
+		else if (playerDidWin('o')){
+			this.winner = -1;
+			return true;
+		}
+
+		//return (moveCount >= size*size);
+		if (moveCount >= size*size){
+			this.winner = 0; // tie
+			return true;
+		}
+
+		return false;
 	}
 }
