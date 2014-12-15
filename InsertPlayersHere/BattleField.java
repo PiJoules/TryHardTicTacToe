@@ -19,7 +19,7 @@ public class BattleField {
         boolean playing = true;
 
         while(playing){
-            System.out.println("Turn: " + board.getMoveCount());
+            System.out.println("Turn: " + board.getMoveCount()+1);
 
             playerMove= p1.getMove(board);
             board = board.makeMove(playerMove);
