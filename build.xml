@@ -9,6 +9,8 @@
 	<property name="Player1" value="RandomPlayer"/>
 	<property name="Player2" value="RandomPlayer"/>
 	<property name="Size" value="3"/>
+	<property name="Plays" value="1"/>
+	<property name="PlayUntilLoss" value="False"/>
 
     <path id="classpath">
         <fileset dir="${build.jars}" includes="**/*.jar"/>
@@ -45,6 +47,8 @@
 			<arg value="${Player1}"/>
 			<arg value="${Player2}"/>
 			<arg value="${Size}"/>
+			<arg value="${Plays}"/>
+			<arg value="${PlayUntilLoss}"/>
 		</java>
 		<delete dir="${battlefield}/${build.dir}"/>
 	</target>
