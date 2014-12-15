@@ -13,7 +13,7 @@ corner | side | corner
 public class GibusLeoPlayer extends Player {
 
 	public final int playerNumber;
-	private final boolean verbose = true;
+	private final boolean verbose = false;
 	private Random random = new Random();
 
 	private boolean didGetInitials = false;
@@ -55,7 +55,7 @@ public class GibusLeoPlayer extends Player {
 		}
 
 		if (verbose)
-			System.out.println("Analysis:");
+			System.out.println("\nGibus Analysis:");
 
 		// Make a random move if there is something I have not
 		// accounted for
@@ -72,7 +72,6 @@ public class GibusLeoPlayer extends Player {
 				if (verbose)
 					System.out.println("Can finish a line");
 				myMoves.add(possibleMove);
-				//previousMoves = possibleMoves;
 				previousMoves = guessOpponentMovesAfterMove(possibleMove, state);
 				return possibleMove;
 			}
@@ -83,7 +82,6 @@ public class GibusLeoPlayer extends Player {
 				if (verbose)
 					System.out.println("Should block opponent");
 				myMoves.add(possibleMove);
-				//previousMoves = possibleMoves;
 				previousMoves = guessOpponentMovesAfterMove(possibleMove, state);
 				return possibleMove;
 			}
@@ -94,11 +92,21 @@ public class GibusLeoPlayer extends Player {
 			possibleMove = size3Strategy(state);
 			if (possibleMove != null){
 				myMoves.add(possibleMove);
-				//previousMoves = possibleMoves;
 				previousMoves = guessOpponentMovesAfterMove(possibleMove, state);
 				return possibleMove;
 			}
 		}
+
+        if (state.getMoveCount() > 0){
+            possibleMove = setup(possibleMoves);
+            if (possibleMove != null){
+                if (verbose)
+                    System.out.println("Will attempt to setup up win and block opponent");
+                myMoves.add(possibleMove);
+                previousMoves = guessOpponentMovesAfterMove(possibleMove, state);
+                return possibleMove;
+            }
+        }
 
 		if (verbose)
 			System.out.println("Making random move");
@@ -218,24 +226,150 @@ public class GibusLeoPlayer extends Player {
 			}
 			else if (state.getMoveCount() == 3){
 				// The opponent moved to the corner opposite his first move
-				// If the opponent plays the same startegy as above, then he will
-				// win if I move to one of the remaining corners, so move to any of
-				// the remianing sides
-				//
-				// All moves after this cause finishLine() or blockOpponent() to take over
 				if (moveIsOnCorner(opponentsPreviousMove)){
+					// If the opponent plays the same startegy as above, then he will
+					// win if I move to one of the remaining corners, so move to any of
+					// the remianing sides
+					//
+					// All moves after this cause finishLine() or blockOpponent() to take over
 					Move oppositeCorner = getOppositeCorner(opponentsPreviousMove);
 					if (movesAreSame(opponentsMove,oppositeCorner)){
 						if (verbose)
 							System.out.println("Opponent moved to corner opposite to previous move; will move to random side");
 						return getRandomMove(getSides(possibleMoves));
 					}
+
+					// The opponent moved to the side opposite-adjascent to the corner he 
+					// originally moved to
+					//
+					// For simplicity, will move onto the corner that is the intersection 
+					// between the rows/cols between the 2 moves
+					//
+					// All moves after this cause finishLine() or blockOpponent() to take over
+					else if (moveIsOnSide(opponentsMove)){
+						Move[] corners = getCorners(possibleMoves);
+						for (Move corner : corners){
+							if ( (corner.getX() == opponentsPreviousMove.getX() && corner.getY() == opponentsMove.getY()) || (corner.getY() == opponentsPreviousMove.getY() && corner.getX() == opponentsMove.getX()) ){
+                                return corner;
+                            }
+						}
+					}
 				}
+
 			}
 		}
 
 		return null;
 	}
+
+
+    // Same as blockOpponent(), but given least priority among the
+    // other strategies besides picking a random square
+    //
+    // Assign each empty square a score that determines the importance
+    // in which a move should be placed there
+    // If defensive: +1 is added to the square if it is in the same row or col
+    // as an opponent move, and -1 if the square is in the same row or col
+    // as one of my squares
+    // If offensive: +1 is added to the square if it is in the same row or col
+    // as an opponent move, and +2 if the square is in the same row or col
+    // as one of my squares
+    private Move setup(Move[] possibleMoves){
+
+        Move possibleMove = null;
+        int opponentCost = 1;
+        int selfCost = 2;
+
+        // Simulate the board
+        char[][] board = new char[boardSize][boardSize];
+        int[][] boardScores = new int[boardSize][boardSize];
+        for (int y = 0; y < boardSize; y++){
+            for (int x = 0; x < boardSize; x++){
+                board[y][x] = ' ';
+                boardScores[y][x] = 0;
+            }
+        }
+        // x will mark my moves; o for the opponent's
+        Set<Integer> opponentRows = new HashSet<Integer>();
+        Set<Integer> opponentCols = new HashSet<>();
+        Set<Integer> opponentDiags = new HashSet<>(); // 1 for first diag; 2 for second
+        Set<Integer> myRows = new HashSet<Integer>();
+        Set<Integer> myCols = new HashSet<>();
+        Set<Integer> myDiags = new HashSet<>();
+        for (Move move : myMoves){
+            board[move.getY()][move.getX()] = 'x';
+            myRows.add(move.getY());
+            myCols.add(move.getX());
+            if (moveIsOnFirstDiagnol(move))
+                myDiags.add(1);
+            if (moveIsOnSecondDiagnol(move))
+                myDiags.add(2);
+        }
+        for (Move move : opponentMoves){
+            board[move.getY()][move.getX()] = 'o';
+            opponentRows.add(move.getY());
+            opponentCols.add(move.getX());
+            if (moveIsOnFirstDiagnol(move))
+                opponentDiags.add(1);
+            if (moveIsOnSecondDiagnol(move))
+                opponentDiags.add(2);
+        }
+
+        // Add 1 to a board for each row, col, or diag that does not contain
+        // any opponent moves, and contains at least 1 of my moves
+        for (int y = 0; y < boardSize; y++){
+            for (int x = 0; x < boardSize; x++){
+                Move currentPos = new Move(x,y,playerNumber);
+                if (!opponentRows.contains(new Integer(y)) && !opponentCols.contains(new Integer(x)) && myRows.contains(new Integer(y)) && myCols.contains(new Integer(x))){
+                    boardScores[y][x]++;
+                    continue;
+                }
+                else if (moveIsOnFirstDiagnol(currentPos) && !opponentDiags.contains(new Integer(1)) && myDiags.contains(new Integer(1))){
+                    boardScores[y][x]++;
+                    continue;
+                }
+                else if (moveIsOnSecondDiagnol(currentPos) && !opponentDiags.contains(new Integer(2)) && myDiags.contains(new Integer(2))){
+                    boardScores[y][x]++;
+                    continue;
+                }
+            }
+        }
+
+        // Can get max score of 3 and min score of -3
+        int minScore = -3;
+        for (int y = 0; y < boardSize; y++){
+            for (int x = 0; x < boardSize; x++){
+                if (board[y][x] == ' '){
+                    if (opponentRows.contains(new Integer(y)))
+                        boardScores[y][x] += opponentCost;
+                    if (opponentCols.contains(new Integer(x)))
+                        boardScores[y][x] += opponentCost;
+                    if (myRows.contains(new Integer(y)))
+                        boardScores[y][x] += selfCost;
+                    if (myCols.contains(new Integer(x)))
+                        boardScores[y][x] += selfCost;
+                    
+                    Move currentPos = new Move(x,y,playerNumber);
+                    if (opponentDiags.contains(new Integer(1)) && moveIsOnFirstDiagnol(currentPos))
+                        boardScores[y][x] += opponentCost;
+                    if (opponentDiags.contains(new Integer(2)) && moveIsOnSecondDiagnol(currentPos))
+                        boardScores[y][x] += opponentCost;
+                    if (myDiags.contains(new Integer(1)) && moveIsOnFirstDiagnol(currentPos))
+                        boardScores[y][x] += selfCost;
+                    if (myDiags.contains(new Integer(2)) && moveIsOnSecondDiagnol(currentPos))
+                        boardScores[y][x] += selfCost;
+
+                    if (boardScores[y][x] > minScore){
+                        minScore = boardScores[y][x];
+                        possibleMove = getMoveFromCoordinates(possibleMoves,x,y);
+                    }
+                }
+            }
+        }
+
+        return possibleMove;
+
+    }
 
 
 	// Same as blockOpponent(), but priority is given over checking for 
@@ -507,6 +641,27 @@ public class GibusLeoPlayer extends Player {
 		return ( move1.getX() == move2.getX() && (move1.getY() == move2.getY()-1 || move1.getY() == move2.getY()+1) )
 			|| ( move1.getY() == move2.getY() && (move1.getX() == move2.getX()-1 || move1.getX() == move2.getX()+1) );
 	}
+
+    // Diagnol1: [0,0] -> [n,n]
+    // Diagnol2: [0,n] -> [n,0]
+    private boolean moveIsOnFirstDiagnol(Move move){
+        // Check if on first diagnol
+        for (int x = 0; x < boardSize; x++){
+            if (move.getX() == x && move.getY() == x){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean moveIsOnSecondDiagnol(Move move){
+        // Check if on second diagnol
+        for (int x = 0; x < boardSize; x++){
+            if (move.getX() == x && move.getY() == boardSize-1-x){
+                return true;
+            }
+        }
+        return false;
+    }
 
 	private boolean moveIsOnCorner(Move move){
 		return (move.getX() == 0 || move.getX() == boardSize-1) && (move.getY() == 0 || move.getY() == boardSize-1);
