@@ -5,7 +5,7 @@ import java.io.*;
 public class BattleField {
     public static void main(String[] args) throws Exception {
 
-        TicTacToeState board = new TicTacToeState(3);
+        TicTacToeState board = new TicTacToeState(Integer.parseInt(args[2])); // Third arg is board size
 
         Class<?> clazz = Class.forName(args[0]);
         Constructor<?> ctor = clazz.getConstructors()[0];
@@ -19,7 +19,7 @@ public class BattleField {
         boolean playing = true;
 
         while(playing){
-            System.out.println("Turn: " + board.getMoveCount()+1);
+            System.out.println("Turn: " + (board.getMoveCount()+1));
 
             playerMove= p1.getMove(board);
             board = board.makeMove(playerMove);
@@ -32,7 +32,7 @@ public class BattleField {
             }
 
             System.out.println("______________");
-            System.out.println("Turn: " + board.getMoveCount());
+            System.out.println("Turn: " + (board.getMoveCount()+1));
 
             playerMove = p2.getMove(board);
             board = board.makeMove(playerMove);
