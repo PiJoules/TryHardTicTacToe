@@ -6,11 +6,10 @@ import tictactoe.*;
  */
 public class FirstPlayer extends Player {
 
-	public final int playerNumber;
 	private static Random random = new Random();
 
 	public FirstPlayer(int player){
-		this.playerNumber = player;
+		super(player);
 	}
 
 	public Move getMove(TicTacToeState state){

@@ -12,7 +12,6 @@ corner | side | corner
 
 public class GibusLeoPlayer extends Player {
 
-	public final int playerNumber;
 	private final boolean verbose = false;
 	private Random random = new Random();
 
@@ -25,7 +24,7 @@ public class GibusLeoPlayer extends Player {
 
 	// Will be either 0 (first) or 1 (second)
 	public GibusLeoPlayer(int player){
-		this.playerNumber = player;
+        super(player);
 	}
 
 	// Determine which strategy to take
