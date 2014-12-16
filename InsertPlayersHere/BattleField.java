@@ -50,6 +50,7 @@ public class BattleField {
                 System.out.println("Turn: " + (board.getMoveCount()+1));
 
                 playerMove= p1.getMove(board);
+                System.out.println(playerMove.toString());
                 board = board.makeMove(playerMove);
                 board.display();
                 if (isGameOver(board))

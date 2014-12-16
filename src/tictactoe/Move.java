@@ -26,4 +26,13 @@ public class Move {
 	{
 		return player;
 	}
+
+	/**
+	 * Makind our own toString
+	 */
+	@Override 
+	public String toString()
+	{
+		return "Row: " + yPos + " Column: " + xPos; 
+	}
 }
