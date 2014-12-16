@@ -12,7 +12,7 @@ corner | side | corner
 
 public class GibusLeoPlayer extends Player {
 
-	private final boolean verbose = true;
+	private final boolean verbose = false;
 	private Random random = new Random();
 
 	private boolean didGetInitials = false;
