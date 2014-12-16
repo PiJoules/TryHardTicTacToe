@@ -12,7 +12,7 @@ corner | side | corner
 
 public class GibusLeoPlayer extends Player {
 
-	private final boolean verbose = false;
+	private final boolean verbose = true;
 	private Random random = new Random();
 
 	private boolean didGetInitials = false;
@@ -691,7 +691,7 @@ public class GibusLeoPlayer extends Player {
 		int opponentNumber = 0;
 		if (playerNumber == 0)
 			opponentNumber = 1;
-		return state.getAllMoves(opponentNumber);
+		return opponentsNextState.getAllMoves(opponentNumber);
 	}
 
 }
