@@ -1,6 +1,7 @@
 package tictactoe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // The current state of the board
 public class TicTacToeState {
@@ -93,7 +94,17 @@ public class TicTacToeState {
 
 	// Clone the state then make move
 	public TicTacToeState makeMoveCloning(Move move){
-		TicTacToeState clone = new TicTacToeState(this.board, this.moveCount, this.size);
+		char[][] clonedBoard = new char[size][size];
+		//Clone the board
+		for(int i = 0; i < size; i ++)
+		{
+			for(int j = 0; j < size; j ++)
+			{
+				clonedBoard[i][j] = this.board[i][j];
+			}
+		}
+		//Clone the state
+		TicTacToeState clone = new TicTacToeState(clonedBoard, this.moveCount, this.size);
 		clone = clone.makeMove(move);
 		return clone;
 	}
